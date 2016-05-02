@@ -27,7 +27,8 @@
 
 				/* set the elapsed time */
 				setElapsedTime: function(){
-					this.state.elapsed = new Date().getTime()-this.state.date;
+					var elapsed = new Date().getTime()-this.state.date;
+					this.setState({elapsed: elapsed});
 				},
 
 				/* returns the elapsed time split into hours, minutes, seconds and milliseconds */
@@ -70,7 +71,7 @@
 				render: function (){
 					return (
 						<div>
-							<h1>Elapsed Time now is {this.getElapsedTime()}</h1>
+							<h1>{this.getElapsedTime()}</h1>
 							<button onClick={this.handleTimerAction.bind(this, 'start')}>Start</button>
 							<button onClick={this.handleTimerAction.bind(this, 'stop')}>Stop</button>
 							<button onClick={this.resetTimer}>Reset</button>
@@ -79,12 +80,8 @@
 				}
 			});
 
-			setInterval(function() {
-				ReactDOM.render (
-					<StopWatchComponent/>,
-					document.body
-				);
-			}, 50);
+			ReactDOM.render (<StopWatchComponent/>, document.body);
+
 		</script>
 	</body>
 </html>
