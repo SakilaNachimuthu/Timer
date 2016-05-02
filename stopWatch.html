@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="Author" content="SakilaN">
+		<meta name="Keywords" content="StopWatch">
+		<meta name="Description" content="StopWatch">
+		<meta name="viewport" content="width=device-width">
+		<title>Stop Watch</title>
+		<script src="http://fb.me/react-15.0.1.js"></script>
+		<script src="http://fb.me/react-dom-15.0.1.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+	</head>
+	<body>
+		<div id="rootStopWatch"></div>
+		<script type="text/babel">
+			var StopWatchComponent = React.createClass({
+				/* set the Initial state */
+					getInitialState: function (){
+						return {
+							date: new Date().getTime(),
+							elapsed: 0,
+							isStart: false,
+						timer: null,
+					};
+				},
+
+				/* set the elapsed time */
+				setElapsedTime: function(){
+					this.state.elapsed = new Date().getTime()-this.state.date;
+				},
+
+				/* returns the elapsed time split into hours, minutes, seconds and milliseconds */
+				getElapsedTime: function(){
+					var hour = Math.round(Math.floor(this.state.elapsed/1000/60/60)%24);
+					var minute = Math.round(Math.floor(this.state.elapsed/1000/60)%60);
+					var seconds = Math.round(Math.floor(this.state.elapsed/1000)%60);
+					var milliseconds = this.state.elapsed%1000;
+					return hour + ":" + minute + ":" + seconds + ":" + milliseconds;
+				},
+
+				/* sets the component state for start and stop fucntionality */
+				handleTimerAction: function(action){
+					if(action == 'start' && !this.state.isStart) {
+						this.state.date = new Date().getTime() - this.state.elapsed;
+						var timer = setInterval(this.setElapsedTime, 50);
+						this.setState({
+							isStart: true,
+							timer: timer,
+						});
+					} else if(action == 'stop' && this.state.isStart){
+						clearInterval(this.state.timer);
+						this.setState({
+							isStart: false,
+							timer: null,
+						});
+					}
+				},
+
+				/* resets the timer */
+				resetTimer: function(){
+					clearInterval(this.state.timer);
+					this.setState({
+						elapsed: 0,
+						isStart: false,
+						timer: null,
+					});
+				},
+
+				render: function (){
+					return (
+						<div>
+							<h1>Elapsed Time now is {this.getElapsedTime()}</h1>
+							<button onClick={this.handleTimerAction.bind(this, 'start')}>Start</button>
+							<button onClick={this.handleTimerAction.bind(this, 'stop')}>Stop</button>
+							<button onClick={this.resetTimer}>Reset</button>
+						</div>
+					);
+				}
+			});
+
+			setInterval(function() {
+				ReactDOM.render (
+					<StopWatchComponent/>,
+					document.body
+				);
+			}, 50);
+		</script>
+	</body>
+</html>
